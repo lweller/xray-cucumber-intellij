@@ -187,6 +187,20 @@ class XrayCucumberServiceTests {
         verifyNoMoreInteractions(progressReporter);
     }
 
+    @Test
+    void createNewJiraTestIssue_successful() throws IOException {
+        setupHttpResponse(HttpStatus.SC_OK, ContentType.APPLICATION_JSON);
+        Files.createDirectories(outputDir);
+        Files.createFile(featureFile);
+
+        // act
+        xrayCucumberService.createNewJiraTestIssue(serviceParameters, progressReporter, "Test");
+
+        // assert
+        verify(progressReporter).reportSuccess(any());
+        verifyNoMoreInteractions(progressReporter);
+    }
+
     private void setupHttpResponse(int httpStatus, ContentType contentType) throws IOException {
         HttpResponse httpResponse = mock(HttpResponse.class);
         StatusLine statusLine = mock(StatusLine.class);

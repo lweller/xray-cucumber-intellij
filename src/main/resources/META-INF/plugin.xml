@@ -34,6 +34,12 @@
                 description="Downloads Xray cucumber tests from Jira and saves them in same directory as the xray-cucumber.json config file.">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </action>
+        <action id="XrayCucumber.ProjectViewPopupMenu.SyncScenariosToJiraAction"
+                class="ch.wellernet.intellij.plugins.xraycucumber.ui.SyncScenariosToJiraAction"
+                text="Synchronize Cucumber Scenarios to Jira"
+                description="Creates a Jira issue of type 'test' for each scenario (or scenario outline) present in the Cucumber file.">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
         <!-- disabled due to shaky implementation of Xray import REST endpoint
         <action id="XrayCucumber.ProjectViewPopupMenu.UploadTestToJiraAction"
                 class="ch.wellernet.intellij.plugins.xraycucumber.ui.UploadTestToJiraAction"

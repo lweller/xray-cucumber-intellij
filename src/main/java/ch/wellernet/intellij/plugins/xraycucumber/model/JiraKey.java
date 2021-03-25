@@ -19,42 +19,33 @@
 
 package ch.wellernet.intellij.plugins.xraycucumber.model;
 
-import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Accessors;
+import lombok.val;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.net.URL;
-import java.util.Map;
-import java.util.Optional;
+import java.util.regex.Pattern;
 
-@Value
-@Builder(toBuilder = true)
+@Value(staticConstructor = "of")
 @Accessors(fluent = true)
-public class ServiceParameters {
+public class JiraKey {
+
+    private static final Pattern PATTERN = Pattern.compile("([A-Z]+)-(\\d+)");
+
+    public static JiraKey valueOf(String key) {
+        val matcher = PATTERN.matcher(key);
+        if(!matcher.matches()) {
+            throw new IllegalArgumentException(String.format("%s is not a valid Jira key.", key));
+        }
+        return JiraKey.of(matcher.group(1), Long.parseLong(matcher.group(2)));
+    }
+
     @Nonnull
-    URL url;
+    String project;
 
-    @Nullable
-    String username;
+    long id;
 
-    @Nullable
-    String password;
-
-    @Nullable
-    String projectKey;
-
-    @Nullable
-    Long filterId;
-
-    @Nullable
-    FileReplacementBehaviour fileReplacementBehaviour;
-
-    @Nullable
-    Map<String, Object> additionalTestFieldValues;
-
-    public FileReplacementBehaviour fileReplacementBehaviour() {
-        return Optional.ofNullable(fileReplacementBehaviour).orElse(FileReplacementBehaviour.ASK);
+    public String toString() {
+        return String.format("%s-%s", project, id);
     }
 }

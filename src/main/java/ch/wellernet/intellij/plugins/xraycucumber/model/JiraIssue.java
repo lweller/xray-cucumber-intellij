@@ -20,41 +20,22 @@
 package ch.wellernet.intellij.plugins.xraycucumber.model;
 
 import lombok.Builder;
+import lombok.Singular;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.net.URL;
 import java.util.Map;
-import java.util.Optional;
 
 @Value
 @Builder(toBuilder = true)
 @Accessors(fluent = true)
-public class ServiceParameters {
-    @Nonnull
-    URL url;
+public class JiraIssue {
 
     @Nullable
-    String username;
+    JiraKey key;
 
-    @Nullable
-    String password;
-
-    @Nullable
-    String projectKey;
-
-    @Nullable
-    Long filterId;
-
-    @Nullable
-    FileReplacementBehaviour fileReplacementBehaviour;
-
-    @Nullable
-    Map<String, Object> additionalTestFieldValues;
-
-    public FileReplacementBehaviour fileReplacementBehaviour() {
-        return Optional.ofNullable(fileReplacementBehaviour).orElse(FileReplacementBehaviour.ASK);
-    }
+    @Singular
+    Map<String, Object> fields;
 }
