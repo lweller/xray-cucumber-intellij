@@ -66,9 +66,9 @@ patchPluginXml {
      """
 
     changeNotes """
-    <em>1.0.0</em>     
+    <em>1.0.1</em>     
       <ul>
-      <li>Initial Version</li>
+      <li>Added the capability of uploading cucumber tests to Xray for Jira</li>
       </ul>
     """
 
