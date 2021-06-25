@@ -21,6 +21,7 @@ package ch.wellernet.intellij.plugins.xraycucumber.service;
 
 import ch.wellernet.intellij.plugins.xraycucumber.model.FileReplacementBehaviour;
 import ch.wellernet.intellij.plugins.xraycucumber.model.ServiceParameters;
+import com.intellij.openapi.vfs.VirtualFile;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.UnhandledException;
 import org.apache.http.HttpEntity;
@@ -38,14 +39,18 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.util.EntityUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 @RequiredArgsConstructor
 public class XrayCucumberService {
@@ -103,6 +108,26 @@ public class XrayCucumberService {
         }
     }
 
+    public void uploadXrayCucumberTestZip(ServiceParameters serviceParameters, Path zipFilePath, ProgressReporter progressReporter) {
+        Optional<ProgressReporter> nullSafeProgressReporter = Optional.ofNullable(progressReporter);
+        try {
+            HttpUriRequest request = buildZipUploadRequest(serviceParameters, zipFilePath);
+            HttpEntity httpEntity = executeRequest(request);
+            verifyContentType(httpEntity, ContentType.APPLICATION_JSON);
+            nullSafeProgressReporter.ifPresent(reporter -> reporter.reportSuccess("uploaded successfully " + zipFilePath));
+        } catch (AuthenticationException e) {
+            if (!nullSafeProgressReporter.isPresent()) {
+                throw new UnhandledException(e);
+            }
+            nullSafeProgressReporter.ifPresent(reporter -> reporter.reportAuthenticationError(e.getMessage()));
+        } catch (IllegalArgumentException | IllegalStateException | URISyntaxException | IOException e) {
+            if (!nullSafeProgressReporter.isPresent()) {
+                throw new UnhandledException(e);
+            }
+            nullSafeProgressReporter.ifPresent(reporter -> reporter.reportError(e.getMessage(), e));
+        }
+    }
+
     private HttpUriRequest buildDownloadRequest(ServiceParameters serviceParameters)
             throws AuthenticationException, URISyntaxException {
         Long filterId = Optional.ofNullable(serviceParameters.filterId())
@@ -125,6 +150,22 @@ public class XrayCucumberService {
         addAuthentication(serviceParameters, request);
         HttpEntity entity = MultipartEntityBuilder.create()
                 .addBinaryBody("file", Files.newInputStream(featureFile), ContentType.APPLICATION_JSON, featureFile.getFileName().toString())
+                .build();
+        request.setEntity(entity);
+        return request;
+    }
+
+    private HttpUriRequest buildZipUploadRequest(ServiceParameters serviceParameters, Path zipFile)
+            throws AuthenticationException, URISyntaxException, IOException {
+        String projectKey = Optional.ofNullable(serviceParameters.projectKey())
+                .orElseThrow(() -> new IllegalArgumentException("projectKey is required to download cucumber tests"));
+        URIBuilder uriBuilder = new URIBuilder(serviceParameters.url() + REST_ENDPOINT_IMPORT_FEATURE)
+                .addParameter("projectKey", projectKey);
+        HttpPost request = new HttpPost(uriBuilder.build());
+        addAuthentication(serviceParameters, request);
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .addBinaryBody("file", Files.newInputStream(zipFile),
+                        ContentType.APPLICATION_JSON, zipFile.getFileName().toString())
                 .build();
         request.setEntity(entity);
         return request;
@@ -200,6 +241,31 @@ public class XrayCucumberService {
             return progressReporter.askToReplaceExistingFile(featureFileName).isReplaceExistingFile();
         }
         return fileReplacementBehaviour == FileReplacementBehaviour.REPLACE;
+    }
+
+
+    public Path zipCucumberTests(ProgressReporter progressReporter,VirtualFile outputLocation,VirtualFile[] featureFiles) {
+        Optional<ProgressReporter> nullSafeProgressReporter = Optional.ofNullable(progressReporter);
+        File zipFile;
+        zipFile = new File(outputLocation.getPath()+File.separator+outputLocation.getName()+".zip");
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile))) {
+            zipOutputStream.setLevel(ZipOutputStream.STORED);
+
+            for (VirtualFile f : featureFiles) {
+                if (Objects.equals(f.getExtension(), "feature")) {
+                    ZipEntry entry = new ZipEntry(f.getName());
+                    zipOutputStream.putNextEntry(entry);
+                    zipOutputStream.write(f.contentsToByteArray());
+                    zipOutputStream.closeEntry();
+                }
+            }
+        }catch(Exception e){
+            if (!nullSafeProgressReporter.isPresent()) {
+                throw new UnhandledException(e);
+            }
+            nullSafeProgressReporter.ifPresent(reporter -> reporter.reportAuthenticationError(e.getMessage()));
+        }
+        return zipFile.toPath();
     }
 }
 
