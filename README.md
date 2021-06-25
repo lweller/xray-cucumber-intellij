@@ -19,6 +19,11 @@ Now when opening context menu of freshly created `xray-cucumber.json` file (righ
 choose _Downloading Cucumber Xray Tests from Jira_. After entering the username and password, the download of `.feature`
 files is started and finally stored along with `xray-cucumber.json` file.
 
+Additionally, opening the context menu of a `xray-cucumber.json` file (right click) and choosing _Upload Cucumber Xray Tests to Jira_
+will generate a zip archive of all `.feature` files within the same directory as the `xray-cucumber.json` file. After 
+authenticating, this option can be used to update existing tests and pre-conditions that already exist in Jira, or (if no matching existing
+tests are found) will create new tests.
+
 ## Configuration
 
 The operations of the plugin can be configured with a `xray-cucumber.json` file. This file may reside at any location
@@ -47,10 +52,12 @@ file. They can then be executed and modified locally.
 
 By default, locally existing files will not be overridden during download, so that any local changes won't get lost. 
 
-### Upload modified features files back to Jira (not available yet)
+### Upload modified features files back to Jira (added in v1.0.1)
 
 With the command _Upload Cucumber Tests to Jira_ in context menu of a `.feature` file, a locally modified test can be 
-uploaded to Jira. If some scenarios of background clauses within the `.feature` file not exist in Jira (i.e. they don't
+uploaded to Jira. If some scenarios or background clauses within the `.feature` file not exist in Jira (i.e. they don't
 have any annotation with the corresponding Jira ID), new issues are created using the configured project key.
+
+Refer to [Xray's documentation](https://docs.getxray.app/display/XRAY/Importing+Cucumber+Tests+-+REST "Xray - Importing Cucumber Tests - REST v1.0") for best practices and rules for updating existing tests and pre-conditions.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
