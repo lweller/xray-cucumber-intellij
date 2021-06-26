@@ -243,7 +243,6 @@ public class XrayCucumberService {
         return fileReplacementBehaviour == FileReplacementBehaviour.REPLACE;
     }
 
-
     public Path zipCucumberTests(ProgressReporter progressReporter,VirtualFile outputLocation,VirtualFile[] featureFiles) {
         Optional<ProgressReporter> nullSafeProgressReporter = Optional.ofNullable(progressReporter);
         File zipFile;

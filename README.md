@@ -9,14 +9,14 @@ Create a `xray-cucumber.json` in package where normally cucumber `.feature` file
 
 ```
 {
-  "url": "<Base Jira URL, e.g. https://issues.exable.com>",
+  "url": "<Base Jira URL, e.g. https://issues.example.com>",
   "projectKey": "<Prefix of ID's used in the Jira project>",
-  "filterId": <ID of a Jira filter retuning some Xray cucumber tests>
+  "filterId": <ID of a Jira filter returning some Xray cucumber tests>
 }
 ```
 
-Now when opening context menu of freshly created `xray-cucumber.json` file (right click),
-choose _Downloading Cucumber Xray Tests from Jira_. After entering the username and password, the download of `.feature`
+Now when opening context menu of freshly created `xray-cucumber.json` file (right click), choose _Downloading Cucumber
+Xray Tests from Jira_. After entering the username and password, the download of `.feature`
 files is started and finally stored along with `xray-cucumber.json` file.
 
 Additionally, opening the context menu of a `xray-cucumber.json` file (right click) and choosing _Upload Cucumber Xray Tests to Jira_
@@ -34,7 +34,7 @@ It may contain the following parameters:
 
 |Parameter                 | Description                                                                                                      | Default Value                                                                                                      |
 |--------------------------|------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
-| url                      | URL to Jira                                                                                                      |                                                                                                                    |
+| url                      | URL to Jira<br> e.g. if your url for accessing issues is something like <br> `https://issues.example.com/issues`, <br> then you need to set this base url to <br> `https://issues.example.com`| |                                                                                                      |                                                                                                                    |
 | username                 | username of an user allow to access Jira                                                                         | should remain undefined, so that the credentials are loaded from password store of IntelliJ or requested from user | 
 | password                 | password of an user allow to access Jira                                                                         | should remain undefined, so that the credentials are loaded from password store of IntelliJ or requested from user |
 | projectKey               | Jira project key to use when uploading new tests                                                                 |                                                                                                                    |
@@ -52,7 +52,7 @@ file. They can then be executed and modified locally.
 
 By default, locally existing files will not be overridden during download, so that any local changes won't get lost. 
 
-### Upload modified features files back to Jira (added in v1.0.1)
+### Upload modified feature files back to Jira (added in v1.1.0)
 
 With the command _Upload Cucumber Tests to Jira_ in context menu of a `.feature` file, a locally modified test can be 
 uploaded to Jira. If some scenarios or background clauses within the `.feature` file not exist in Jira (i.e. they don't
