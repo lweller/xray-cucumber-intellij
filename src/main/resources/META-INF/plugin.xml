@@ -40,7 +40,12 @@
                 text="Upload Xray Cucumber Test"
                 description="Uploads the Xray cucumber test to Jira based on xray-cucumber.json config file located in same directory.">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>  -->
+        <action id="XrayCucumber.ProjectViewPopupMenu.UploadTestsToJiraAction"
+                class="ch.wellernet.intellij.plugins.xraycucumber.ui.UploadTestsToJiraAction"
+                text="Upload Xray Cucumber Tests"
+                description="Uploads the Xray cucumber tests to Jira based on xray-cucumber.json config file located in same directory.">
+            <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="XrayCucumber.ProjectViewPopupMenu.DownloadTestsFromJiraAction" anchor="after"/>
         </action>
-        -->
     </actions>
 </idea-plugin>
