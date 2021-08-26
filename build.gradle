@@ -59,7 +59,7 @@ patchPluginXml {
      <p>Allows to handle cucumber tests stored in Xray for Jira (e.g. download for edition or execution and upload 
      after modification).</p>
      <p>See <a href="https://github.com/lweller/xray-cucumber-intellij">project site</a> on GitHub for further 
-     informartions.</p>
+     information.</p>
      """
 
     changeNotes """
